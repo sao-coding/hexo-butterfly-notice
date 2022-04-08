@@ -17,3 +17,5 @@ notice:
   js: https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js
 ```
 暫時放棄遇到瓶頸
+https://blog.realwds.com/posts/39c5cc87
+可以顯示無法讀取資料
