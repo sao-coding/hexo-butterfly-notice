@@ -11,33 +11,31 @@ const util = require('hexo-util')
 
 hexo.extend.filter.register('after_generate', function (locals) {
   // 首先获取整体的配置项名称
-  const config = hexo.config.artitalk || hexo.theme.config.artitalk
+  const config = hexo.config.notice || hexo.theme.config.notice
   // 如果配置开启
-  if (!(config && config.enable.card)) return
+  if (!(config && config.enable)) return
   // 集体声明配置项
-    const card_data = {
-      page_enable: config.enable.page ? config.enable.page : false,
+    const data = {
       enable_page: config.enable_page ? config.enable_page : "all",
       layout_type: config.layout.type,
       layout_name: config.layout.name,
       layout_index: config.layout.index ? config.layout.index : 0,
-      path: config.path ? "/" + config.path + "/" : "/artitalk/",
-      exclude: config.exclude ? config.exclude : "/artitalk/",
+      path: config.path ? "/" + config.path + "/" : "/notice/",
+      //exclude: config.exclude ? config.exclude : "/notice/",
       appId: config.appId,
       appKey: config.appKey,
       option: config.option ? JSON.stringify(config.option) : false,
-      js: config.js ? urlFor(config.js) : 'https://unpkg.zhimg.com/artitalk',
-      card_css: config.card_css ? urlFor(config.card_css) : 'https://unpkg.zhimg.com/hexo-butterfly-artitalk-pro/lib/card.css',
-      card_visual_js: config.card_visual_js ? urlFor(config.card_visual_js) : 'https://unpkg.zhimg.com/hexo-butterfly-artitalk-pro/lib/card_visual.js'
+      custom_css: config.custom_css ? urlFor(config.custom_css) : "https://cdn.jsdelivr.net/gh/sao-coding/blog-cdn/hexo-butterfly-notice/notice.min.css"//,
+      //custom_js: config.custom_js ? urlFor(config.custom_js) : "https://unpkg.zhimg.com/hexo-butterfly-swiper/lib/swiper_init.js"
     }
   // 渲染页面
-  const temple_html_text = config.temple_html ? config.temple_html : pug.renderFile(path.join(__dirname, './lib/card.pug'),card_data)
+  const temple_html_text = config.temple_html ? config.temple_html : pug.renderFile(path.join(__dirname, './lib/html.pug'),data)
 
   //cdn资源声明
     //样式资源
-  const css_text = `<link rel="stylesheet" href="${card_data.card_css}" media="defer" onload="this.media='all'">`
+  const css_text = `<link rel="stylesheet" href="${data.custom_css}" media="defer" onload="this.media='all'">`
     //脚本资源
-  const js_text = `<script async src="${card_data.card_visual_js}"></script>`
+  const js_text = `<script async src="${data.custom_js}"></script>`
 
   //注入容器声明
   var get_layout
@@ -63,23 +61,10 @@ hexo.extend.filter.register('after_generate', function (locals) {
     var item_html = '${temple_html_text}';
     console.log('已挂载${pluginname}');
     parent_div_git.insertAdjacentHTML("afterbegin",item_html);
-    (()=>{
-      const init = () => {
-        new Artitalk(Object.assign({
-          appId: '${card_data.appId}',
-          appKey: '${card_data.appKey}',
-        }, ${card_data.option} ))
-      }
-      if (typeof Artitalk === 'function') {
-        init()
-      } else {
-        getScript('${card_data.js}').then(init)
-      }
-    })()
     }
-  var elist = '${card_data.exclude}'.split(',');
+  var elist = '${data.exclude}'.split(',');
   var cpage = location.pathname;
-  var epage = '${card_data.enable_page}';
+  var epage = '${data.enable_page}';
   var flag = 0;
 
   for (var i=0;i<elist.length;i++){
@@ -99,7 +84,7 @@ hexo.extend.filter.register('after_generate', function (locals) {
   // 此处利用挂载容器实现了二级注入
   hexo.extend.injector.register('body_end', user_info_js, "default");
   // 注入脚本资源
-  hexo.extend.injector.register('body_end', js_text, "default");
+  //hexo.extend.injector.register('body_end', js_text, "default");
   // 注入样式资源
   hexo.extend.injector.register('head_end', css_text, "default");
 },
@@ -110,36 +95,3 @@ hexo.extend.helper.register('priority', function(){
   return priority
 })
 )
-
-// 再是编写页面版插件，使用页面生成式模板
-// 此处直接复用hexo-butterfly-artitalk的原代码
-hexo.extend.generator.register('artitalk', function (locals) {
-  const config = hexo.config.artitalk || hexo.theme.config.artitalk
-
-  if (!(config && config.enable.page)) return
-
-  const page_data = {
-    appId: config.appId,
-    appKey: config.appKey,
-    option: config.option ? JSON.stringify(config.option) : false,
-    js: config.js ? urlFor(config.js) : 'https://unpkg.zhimg.com/artitalk'
-  }
-
-  const content = pug.renderFile(path.join(__dirname, './lib/page.pug'), page_data)
-
-  const pathPre = config.path || 'artitalk'
-
-  let pageDate = {
-    content: content
-  }
-
-  if (config.front_matter) {
-    pageDate = Object.assign(pageDate, config.front_matter)
-  }
-
-  return {
-    path: pathPre + '/index.html',
-    data: pageDate,
-    layout: ['page', 'post']
-  }
-})
