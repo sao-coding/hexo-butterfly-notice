@@ -1,0 +1,21 @@
+{
+  "name": "hexo-butterfly-notice",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "eslint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "d"
+  },
+  "keywords": [
+    "notice"
+  ],
+  "author": "sao-coding",
+  "license": "ISC"
+}
