@@ -16,3 +16,4 @@ notice:
   css:
   js: https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js
 ```
+暫時放棄遇到瓶頸
