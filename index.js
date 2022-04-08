@@ -1,6 +1,6 @@
 'use strict'
 // 全局声明侧栏插件代号
-const pluginname = 'hexo-butterfly-notice'
+const pluginname = 'hexo_butterfly_notice'
 // 全局声明依赖
 const pug = require('pug')
 const path = require('path')
@@ -25,8 +25,8 @@ hexo.extend.filter.register('after_generate', function (locals) {
       //appId: config.appId,
       //appKey: config.appKey,
       //option: config.option ? JSON.stringify(config.option) : false,
-      custom_css: config.custom_css ? urlFor(config.custom_css) : "https://cdn.jsdelivr.net/gh/sao-coding/blog-cdn/hexo-butterfly-notice/notice.min.css"//,
-      //custom_js: config.custom_js ? urlFor(config.custom_js) : "https://unpkg.zhimg.com/hexo-butterfly-swiper/lib/swiper_init.js"
+      custom_css: config.custom_css ? urlFor(config.custom_css) : "https://cdn.jsdelivr.net/gh/sao-coding/blog-cdn/hexo-butterfly-notice/notice.min.css",
+      //custom_js: config.custom_js ? urlFor(config.custom_js) : "https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"
     }
   // 渲染页面
   const temple_html_text = config.temple_html ? config.temple_html : pug.renderFile(path.join(__dirname, './lib/html.pug'),data)
@@ -35,7 +35,7 @@ hexo.extend.filter.register('after_generate', function (locals) {
     //样式资源
   const css_text = `<link rel="stylesheet" href="${data.custom_css}" media="defer" onload="this.media='all'">`
     //脚本资源
-  //const js_text = `<script async src="${data.custom_js}"></script>`
+  const js_text = `<script data-pjax src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script> <script> new Swiper('.swiper-container', { direction: 'vertical', loop: true, autoplay: { delay: 3000, disableOnInteraction: true, } }) </script>`//`<script async src="${data.custom_js}"></script>`
 
   //注入容器声明
   var get_layout
@@ -84,7 +84,7 @@ hexo.extend.filter.register('after_generate', function (locals) {
   // 此处利用挂载容器实现了二级注入
   hexo.extend.injector.register('body_end', user_info_js, "default");
   // 注入脚本资源
-  //hexo.extend.injector.register('body_end', js_text, "default");
+  hexo.extend.injector.register('body_end', js_text, "default");
   // 注入样式资源
   hexo.extend.injector.register('head_end', css_text, "default");
 },

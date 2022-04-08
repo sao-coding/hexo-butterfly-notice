@@ -1,21 +1,14 @@
-#noticeList.container(onclick=`window.open('/notice/','_self')`)
+#noticeList.container
     i.notice-logo.fas.fa-bullhorn.faa-pulse.animated
-    span=_p('公告欄')
+
     .swiper-container
         #notice-item.swiper-wrapper
-            if site.data.notice
-                each i in site.data.notice
+            if notice
+                each i in notice
                     .li-style.swiper-slide=i.msg
     i.notice-enter.fas.fa-arrow-circle-right(title="查看全文")
 
-.js-pjax
-    script(src='https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js',data-pjax='')
-    script.
-        new Swiper('.swiper-container', {
-            direction: 'vertical',
-            loop: true,
-            autoplay: {
-                delay: 3000,
-                disableOnInteraction: true,
-            }
-        })
+//- .js-pjax
+//-     script(src='https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js',data-pjax='')
+//-     script.
+//-         new Swiper('.swiper-container', {direction: 'vertical',loop: true,autoplay: {delay: 3000,disableOnInteraction: true,}})
