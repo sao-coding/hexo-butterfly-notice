@@ -22,9 +22,9 @@ hexo.extend.filter.register('after_generate', function (locals) {
       layout_index: config.layout.index ? config.layout.index : 0,
       path: config.path ? "/" + config.path + "/" : "/notice/",
       //exclude: config.exclude ? config.exclude : "/notice/",
-      appId: config.appId,
-      appKey: config.appKey,
-      option: config.option ? JSON.stringify(config.option) : false,
+      //appId: config.appId,
+      //appKey: config.appKey,
+      //option: config.option ? JSON.stringify(config.option) : false,
       custom_css: config.custom_css ? urlFor(config.custom_css) : "https://cdn.jsdelivr.net/gh/sao-coding/blog-cdn/hexo-butterfly-notice/notice.min.css"//,
       //custom_js: config.custom_js ? urlFor(config.custom_js) : "https://unpkg.zhimg.com/hexo-butterfly-swiper/lib/swiper_init.js"
     }
@@ -35,23 +35,23 @@ hexo.extend.filter.register('after_generate', function (locals) {
     //样式资源
   const css_text = `<link rel="stylesheet" href="${data.custom_css}" media="defer" onload="this.media='all'">`
     //脚本资源
-  const js_text = `<script async src="${data.custom_js}"></script>`
+  //const js_text = `<script async src="${data.custom_js}"></script>`
 
   //注入容器声明
   var get_layout
   //若指定为class类型的容器
-  if (card_data.layout_type === 'class') {
+  if (data.layout_type === 'class') {
     //则根据class类名及序列获取容器
-    get_layout = `document.getElementsByClassName('${card_data.layout_name}')[${card_data.layout_index}]`
+    get_layout = `document.getElementsByClassName('${data.layout_name}')[${data.layout_index}]`
   }
   // 若指定为id类型的容器
-  else if (card_data.layout_type === 'id') {
+  else if (data.layout_type === 'id') {
     // 直接根据id获取容器
-    get_layout = `document.getElementById('${card_data.layout_name}')`
+    get_layout = `document.getElementById('${data.layout_name}')`
   }
   // 若未指定容器类型，默认使用id查询
   else {
-    get_layout = `document.getElementById('${card_data.layout_name}')`
+    get_layout = `document.getElementById('${data.layout_name}')`
   }
   // 挂载容器脚本
   // 此处在通用模板基础上，我们还需要加一条判断，保证不会在页面版再加载一个侧栏插件
@@ -95,3 +95,29 @@ hexo.extend.helper.register('priority', function(){
   return priority
 })
 )
+
+// 再是编写页面版插件，使用页面生成式模板
+// 此处直接复用hexo-butterfly-notice的原代码
+hexo.extend.generator.register('notice', function (locals) {
+  const config = hexo.config.notice || hexo.theme.config.notice
+
+  if (!(config && config.enable.page)) return
+
+  const content = pug.renderFile(path.join(__dirname, './lib/page.pug'), page_data)
+
+  const pathPre = config.path || 'notice'
+
+  let pageDate = {
+    content: content
+  }
+
+  if (config.front_matter) {
+    pageDate = Object.assign(pageDate, config.front_matter)
+  }
+
+  return {
+    path: pathPre + '/index.html',
+    data: pageDate,
+    layout: ['page', 'post']
+  }
+})
