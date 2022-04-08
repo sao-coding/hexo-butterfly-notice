@@ -17,5 +17,8 @@
     "notice"
   ],
   "author": "sao-coding",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pug": "^3.0.0"
+  }
 }
